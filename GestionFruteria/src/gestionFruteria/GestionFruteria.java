@@ -1,13 +1,14 @@
 package gestionFruteria;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 // Clase que representa un producto en la frutería
 class ProductoFruteria {
-    private String nombre;
-    private double precioKilo;
-    private double pesoDisponible;
+    public String nombre;
+    public double precioKilo;
+    public double pesoDisponible;
 
     // Constructor para inicializar un producto
     public ProductoFruteria(String nombre, double precioKilo, double pesoDisponible) {
@@ -15,6 +16,7 @@ class ProductoFruteria {
         this.precioKilo = precioKilo;
         this.pesoDisponible = pesoDisponible;
     }
+
 
     // Métodos para obtener información del producto
     public String getNombre() {
@@ -27,6 +29,10 @@ class ProductoFruteria {
 
     public double getPesoDisponible() {
         return pesoDisponible;
+    }
+    
+    public void actualizarPesoDisponible(double peso) {
+        this.pesoDisponible += peso;
     }
 
     // Método para vender una cantidad específica del producto
@@ -55,12 +61,28 @@ public class GestionFruteria {
         inventario = new ArrayList<>();
     }
 
-    // Método para agregar un nuevo producto al inventario
     public void agregarProducto(String nombre, double precioKilo, double pesoDisponible) {
-        ProductoFruteria nuevoProducto = new ProductoFruteria(nombre, precioKilo, pesoDisponible);
-        inventario.add(nuevoProducto);
-        System.out.println("Producto agregado: " + nuevoProducto);
+        // Verificar si ya existe un producto con el mismo nombre en el inventario
+        boolean productoExistente = false;
+        for (ProductoFruteria producto : inventario) {
+            if (producto.getNombre().equalsIgnoreCase(nombre)) {
+                // Si existe, sumar al peso disponible directamente
+                producto.pesoDisponible += pesoDisponible;
+                System.out.println("Se han añadido " + pesoDisponible + "kg agregados a: " + nombre);
+                productoExistente = true;
+                break;
+            }
+        }
+
+        // Si no existe, agregar un nuevo producto al inventario
+        if (!productoExistente) {
+            ProductoFruteria nuevoProducto = new ProductoFruteria(nombre, precioKilo, pesoDisponible);
+            inventario.add(nuevoProducto);
+            System.out.println("Nuevo Producto agregado: " + nuevoProducto);
+        }
     }
+
+
 
     // Método para mostrar el inventario de la frutería
     public void mostrarInventario() {
@@ -88,8 +110,38 @@ public class GestionFruteria {
             System.out.println("Producto no encontrado en el inventario.");
         }
     }
+    // Método para obtener el inventario de la frutería
+    public ArrayList<ProductoFruteria> getInventario() {
+        return inventario;
+    }
+    // Nombres de productos posibles
+    private static String[] NOMBRES_PRODUCTOS = {"Manzana", "Pera", "Uva", "Platano", "Naranja"};
 
- // Método principal que maneja el menú y la interacción con el usuario
+    // Método para agregar una cantidad específica de productos al inventario
+    public void agregarProductosAutomatizado(int numeroPruebas) {
+        Random random = new Random();
+
+        for (int i = 0; i < numeroPruebas; i++) {
+            String nombre = NOMBRES_PRODUCTOS[random.nextInt(NOMBRES_PRODUCTOS.length)];
+            double precioKilo = random.nextInt(10+1); // Precio aleatorio entre 1 y 10
+            double pesoDisponible = random.nextInt(50+1); // Peso aleatorio entre 1 y 50
+            agregarProducto(nombre, precioKilo, pesoDisponible);
+        }
+    }
+
+    // Método para vender productos aleatorios en el inventario
+    public void venderProductosAleatorios(int numeroPruebas) {
+        Random random = new Random();
+
+        for (int i = 0; i < numeroPruebas; i++) {
+            ProductoFruteria producto = inventario.get(random.nextInt(inventario.size()));
+            double pesoVender = random.nextInt(5+1); // Vender entre 1 y 5 kilos
+            venderProducto(producto.getNombre(), pesoVender);
+        }
+    }
+
+
+    // Método principal que maneja el menú y la interacción con el usuario
     public static void main(String[] args) {
         // Creamos una instancia de la clase GestionFruteria para gestionar nuestro inventario
         GestionFruteria gestionFruteria = new GestionFruteria();
