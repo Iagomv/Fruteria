@@ -54,7 +54,7 @@ class ProductoFruteria {
 
 // Clase que gestiona el inventario de la frutería
 public class GestionFruteria {
-    private ArrayList<ProductoFruteria> inventario;
+    private static ArrayList<ProductoFruteria> inventario;
 
     // Constructor para inicializar la gestión de la frutería
     public GestionFruteria() {
@@ -139,9 +139,50 @@ public class GestionFruteria {
             venderProducto(producto.getNombre(), pesoVender);
         }
     }
+   
+    // Método para dar entrada a un producto existente
+    public void darEntradaProducto(String nombre, double cantidad) {
+        // Buscamos el producto en el inventario por su nombre
+        boolean encontrado = false;
+        for (ProductoFruteria producto : inventario) {
+            if (producto.getNombre().equalsIgnoreCase(nombre)) {
+                // Si encontramos el producto, actualizamos su peso disponible
+                producto.actualizarPesoDisponible(cantidad);
+                System.out.println("Entrada de producto realizada: " + nombre + " (" + cantidad + " kg)");
+                encontrado = true;
+                break;
+            }
+        }
+        // Si no encontramos el producto, mostramos un mensaje
+        if (!encontrado) {
+            System.out.println("Producto no encontrado en el inventario.");
+        }
+    }
+    // Método para modificar el nombre y precio por kilo de un producto existente
+    public void modificarProducto(String nombre, String nuevoNombre, double nuevoPrecio) {
+        // Iteramos a través del inventario para buscar el producto por nombre
+        for (ProductoFruteria producto : inventario) {
+            // Verificamos si el nombre del producto coincide (ignorando mayúsculas/minúsculas)
+            if (producto.getNombre().equalsIgnoreCase(nombre)) {
+                // Actualizamos el nombre y el precio por kilo del producto
+                producto.nombre = nuevoNombre;
+                producto.precioKilo = nuevoPrecio;
+
+                // Mostramos mensaje de éxito y el producto modificado
+                System.out.println("Hemos modificado el producto: " + producto);
+
+                // Salimos del método después de realizar la modificación
+                return;
+            }
+        }
+
+        // Mostramos mensaje si el producto no está en el inventario
+        System.out.println("No hemos encontrado el producto en nuestro inventario.");
+    }
 
 
-    // Método principal que maneja el menú y la interacción con el usuario
+
+    /// Método principal que maneja el menú y la interacción con el usuario
     public static void main(String[] args) {
         // Creamos una instancia de la clase GestionFruteria para gestionar nuestro inventario
         GestionFruteria gestionFruteria = new GestionFruteria();
@@ -153,10 +194,12 @@ public class GestionFruteria {
         while (true) {
             // Mostramos nuestro menú de opciones
             System.out.println("\nMenú:");
-            System.out.println("1. Agregar producto al inventario");
-            System.out.println("2. Mostrar inventario de la frutería");
-            System.out.println("3. Vender producto");
-            System.out.println("4. Salir");
+            System.out.println("1. Agregar nuevo producto");
+            System.out.println("2. Dar entrada a producto");
+            System.out.println("3. Modificar producto");
+            System.out.println("4. Mostrar inventario de la frutería");
+            System.out.println("5. Vender producto");
+            System.out.println("6. Salir");
             System.out.print("Seleccione una opción: ");
 
             // Leemos la opción seleccionada por nosotros, los usuarios
@@ -167,20 +210,52 @@ public class GestionFruteria {
             switch (opcion) {
                 case 1:
                     // Opción para agregar un nuevo producto al inventario
-                    System.out.print("Ingrese el nombre del producto: ");
-                    String nombre = scanner.nextLine();
-                    System.out.print("Ingrese el precio por kilo del producto: $");
-                    double precioKilo = scanner.nextDouble();
+                    System.out.print("Ingrese el nombre del nuevo producto: ");
+                    String nuevoNombre = scanner.nextLine();
+                    System.out.print("Ingrese el precio por kilo del nuevo producto: $");
+                    double nuevoPrecioKilo = scanner.nextDouble();
                     scanner.nextLine(); // Consumimos el salto de línea después del número
-                    System.out.print("Ingrese el peso disponible del producto en kilos: ");
-                    double peso = scanner.nextDouble();
-                    gestionFruteria.agregarProducto(nombre, precioKilo, peso);
+                    System.out.print("Ingrese el peso disponible del nuevo producto en kilos: ");
+                    double nuevoPeso = scanner.nextDouble();
+                    gestionFruteria.agregarProducto(nuevoNombre, nuevoPrecioKilo, nuevoPeso);
                     break;
                 case 2:
+                    // Opción para dar entrada a producto existente
+                    System.out.print("Ingrese el nombre del producto al que desea dar entrada: ");
+                    String productoEntrada = scanner.nextLine();
+                    System.out.print("Ingrese la cantidad de producto a añadir en kilos: ");
+                    double cantidadEntrada = scanner.nextDouble();
+                    gestionFruteria.darEntradaProducto(productoEntrada, cantidadEntrada);
+                    break;
+                case 3:
+                    // Opción para modificar un producto existente
+                    System.out.print("Ingrese el nombre del producto a modificar: ");
+                    String productoModificar = scanner.nextLine();
+                    // Verificamos si el producto existe antes de intentar modificarlo
+                    boolean productoEncontrado = false;
+                    for (ProductoFruteria producto : inventario) {
+                        if (producto.getNombre().equalsIgnoreCase(productoModificar)) {
+                            productoEncontrado = true;
+                            System.out.print("Ingrese el nuevo nombre para el producto: ");
+                            String nuevoNombre1 = scanner.nextLine();
+                            System.out.print("Ingrese el nuevo precio por kilo para el producto: $");
+                            double nuevoPrecio = scanner.nextDouble();
+                            scanner.nextLine(); // Consumimos el salto de línea después del número
+                            gestionFruteria.modificarProducto(productoModificar, nuevoNombre1, nuevoPrecio);
+                            break;
+                        }
+                    }
+                    // Mostramos mensaje si el producto no está en el inventario
+                    if (!productoEncontrado) {
+                        System.out.println("Producto no encontrado en el inventario. No se puede modificar.");
+                    }
+                    break;
+
+                case 4:
                     // Opción para mostrar el inventario de la frutería
                     gestionFruteria.mostrarInventario();
                     break;
-                case 3:
+                case 5:
                     // Opción para vender un producto del inventario
                     System.out.print("Ingrese el nombre del producto a vender: ");
                     String productoVender = scanner.nextLine();
@@ -188,7 +263,7 @@ public class GestionFruteria {
                     double pesoVender = scanner.nextDouble();
                     gestionFruteria.venderProducto(productoVender, pesoVender);
                     break;
-                case 4:
+                case 6:
                     // Opción para salir del programa
                     System.out.println("Saliendo del programa.");
                     System.exit(0);
