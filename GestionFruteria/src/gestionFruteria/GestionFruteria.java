@@ -1,6 +1,7 @@
 package gestionFruteria;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -202,12 +203,19 @@ public class GestionFruteria {
             System.out.println("6. Salir");
             System.out.print("Seleccione una opción: ");
 
-            // Leemos la opción seleccionada por nosotros, los usuarios
-            int opcion = scanner.nextInt();
-            scanner.nextLine(); // Consumimos el salto de línea después del número
+            // Leemos la opción seleccionada por el usuario
+            try {
+                System.out.print("Seleccione una opción: ");
+                while (!scanner.hasNextInt()) {
+                    System.out.println("Entrada no válida. Por favor, seleccione una de las opciones.");
+                    System.out.print("Seleccione una opción: ");
+                    scanner.next(); // Limpiar el buffer del scanner
+                }
+                int opcion = scanner.nextInt();
+                scanner.nextLine(); // Consumimos el salto de línea después del número
 
-            // Evaluamos la opción seleccionada
-            switch (opcion) {
+                // Evaluamos la opción seleccionada
+                switch (opcion) {
                 case 1:
                     // Opción para agregar un nuevo producto al inventario
                     System.out.print("Ingrese el nombre del nuevo producto: ");
@@ -247,7 +255,7 @@ public class GestionFruteria {
                     }
                     // Mostramos mensaje si el producto no está en el inventario
                     if (!productoEncontrado) {
-                        System.out.println("Producto no encontrado en el inventario. No se puede modificar.");
+                        System.out.println("Producto no encontrado en el inventario.");
                     }
                     break;
 
@@ -270,6 +278,11 @@ public class GestionFruteria {
                 default:
                     // Mensaje para opciones no válidas
                     System.out.println("Opción no válida. Intente de nuevo.");
+                    
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Error de entrada. Por favor, ingrese un número entero válido.");
+                scanner.next(); // Limpiar el buffer del scanner
             }
         }
     }
