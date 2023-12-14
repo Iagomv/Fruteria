@@ -201,7 +201,7 @@ public class GestionFruteria {
             System.out.println("4. Mostrar inventario de la frutería");
             System.out.println("5. Vender producto");
             System.out.println("6. Salir");
-            System.out.print("Seleccione una opción: ");
+           
 
             // Leemos la opción seleccionada por el usuario
             try {
@@ -284,6 +284,8 @@ public class GestionFruteria {
                 System.out.println("Error de entrada. Por favor, ingrese un número entero válido.");
                 scanner.next(); // Limpiar el buffer del scanner
             }
+        
         }
     }
+    
 }
