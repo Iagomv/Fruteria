@@ -189,7 +189,7 @@ public class GestionFruteria {
         GestionFruteria gestionFruteria = new GestionFruteria();
 
         // Creamos un objeto Scanner para leer la entrada del usuario
-        Scanner scanner = new Scanner(System.in);
+        try (Scanner scanner = new Scanner(System.in)) {
 
         // Iniciamos un bucle infinito para mostrar el menú y recibir la entrada del usuario
         while (true) {
@@ -287,5 +287,5 @@ public class GestionFruteria {
         
         }
     }
-    
+   } 
 }
